@@ -1,0 +1,3 @@
+name: VerdensGenerator
+version: '${version}'
+main: dk.sommer.verdensgenerator.VerdensGenerator
