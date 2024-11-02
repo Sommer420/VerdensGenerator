@@ -1,17 +1,27 @@
 package dk.sommer.verdensgenerator;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import eu.okaeri.platform.bukkit.OkaeriBukkitPlugin;
+import eu.okaeri.platform.core.annotation.Scan;
+import eu.okaeri.platform.core.plan.ExecutionPhase;
+import eu.okaeri.platform.core.plan.Planned;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 
-public final class VerdensGenerator extends JavaPlugin {
+import java.util.logging.Level;
 
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
-
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
+@Getter
+@Scan(exclusions = "dk.sommer.verdensgenerator.libs", deep = true)
+public final class VerdensGenerator extends OkaeriBukkitPlugin {
+    @Planned(ExecutionPhase.POST_SETUP)
+    public void startup() {
+        Bukkit.getLogger().info("\n" +
+                "░██████╗░█████╗░███╗░░░███╗███╗░░░███╗███████╗██████╗░\n" +
+                "██╔════╝██╔══██╗████╗░████║████╗░████║██╔════╝██╔══██╗\n" +
+                "╚█████╗░██║░░██║██╔████╔██║██╔████╔██║█████╗░░██████╔╝\n" +
+                "░╚═══██╗██║░░██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝░░██╔══██╗\n" +
+                "██████╔╝╚█████╔╝██║░╚═╝░██║██║░╚═╝░██║███████╗██║░░██║\n" +
+                "╚═════╝░░╚════╝░╚═╝░░░░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═╝░░╚═╝\n" +
+                "\n");
+        Bukkit.getLogger().log(Level.FINEST, "VerdensGenerator loaded! (v"+this.getDescription().getVersion()+")");
     }
 }

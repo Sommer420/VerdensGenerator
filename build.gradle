@@ -1,24 +1,39 @@
 plugins {
     id 'java'
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("maven-publish")
 }
 
 group = 'dk.sommer'
 version = '0.1-alpha'
 
+
+compileJava {
+    options.compilerArgs << '-parameters'
+    options.encoding = 'utf-8'
+}
+
 repositories {
     mavenCentral()
-    maven {
-        name = "spigotmc-repo"
-        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
-    }
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/groups/public/"
-    }
+    mavenLocal()
+    maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url = "https://oss.sonatype.org/content/groups/public/" }
+
+    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.enginehub.org/repo/" }
+    maven { url { uri("https://storehouse.okaeri.eu/repository/maven-releases/") } }
+
 }
 
 dependencies {
-    compileOnly "org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT"
+    implementation 'eu.okaeri:okaeri-commands-bukkit:0.9.5'
+    implementation 'eu.okaeri:okaeri-platform-bukkit:0.4.19'
+    implementation "net.kyori:adventure-text-serializer-legacy:4.17.0"
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.jetbrains:annotations:24.0.0'
+    compileOnly 'org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT'
 }
 
 def targetJavaVersion = 8
@@ -31,14 +46,6 @@ java {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
-}
-
 processResources {
     def props = [version: version]
     inputs.properties props
@@ -46,4 +53,17 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+shadowJar {
+    relocate("eu.okaeri.commands", "dk.sommer.verdensgenerator.libs.cmd")
+    relocate("eu.okaeri", "dk.sommer.verdensgenerator.libs.okaeri")
+    relocate("org.apache", "dk.sommer.verdensgenerator.libs.apache")
+
+    destinationDirectory = file("C:\\Users\\EXG\\OneDrive\\Desktop\\Kodehost\\plugins")
+    //destinationDirectory = file("C:\\Users\\chrso\\Desktop\\Kodehost\\plugins")
+}
+
+build {
+    dependsOn 'shadowJar'
 }
